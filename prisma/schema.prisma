@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-ts"
+  output   = "../src/prisma/generated"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Joueur {
+  nom             String           @id
+  parties         Partie[]
+  partieJoueurs   PartieJoueur[]
+  partieQuestions PartieQuestion[]
+  joueurSucces    JoueurSucces[]
+}
+
+model Succes {
+  id           Int            @id @default(autoincrement())
+  libelle      String
+  description  String
+  joueurSucces JoueurSucces[]
+}
+
+model Categorie {
+  id          Int        @id @default(autoincrement())
+  libelle     String
+  description String
+  questions   Question[]
+}
+
+model Question {
+  id              Int              @id @default(autoincrement())
+  interrogation   String
+  reponse         String
+  proposition1    String
+  proposition2    String
+  proposition3    String
+  id_categorie    Int
+  categorie       Categorie        @relation(fields: [id_categorie], references: [id])
+  partieQuestions PartieQuestion[]
+}
+
+model Partie {
+  id              Int              @id @default(autoincrement())
+  nb_questions    Int
+  nom_vainqueur   String?
+  vainqueur       Joueur?          @relation(fields: [nom_vainqueur], references: [nom])
+  joueurs         PartieJoueur[]
+  partieQuestions PartieQuestion[]
+}
+
+model JoueurSucces {
+  nom_joueur String
+  id_succes  Int
+  joueur     Joueur @relation(fields: [nom_joueur], references: [nom])
+  succes     Succes @relation(fields: [id_succes], references: [id])
+
+  @@id([nom_joueur, id_succes])
+}
+
+model PartieJoueur {
+  nom_joueur String
+  id_partie  Int
+  points     Int
+  joueur     Joueur @relation(fields: [nom_joueur], references: [nom])
+  partie     Partie @relation(fields: [id_partie], references: [id])
+
+  @@id([nom_joueur, id_partie])
+}
+
+model PartieQuestion {
+  id_partie   Int
+  id_question Int
+  id_joueur   String?
+  ordre       Int
+  partie      Partie   @relation(fields: [id_partie], references: [id])
+  question    Question @relation(fields: [id_question], references: [id])
+  joueur      Joueur?  @relation(fields: [id_joueur], references: [nom])
+
+  @@id([id_partie, id_question])
+}
