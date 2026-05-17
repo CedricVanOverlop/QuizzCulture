@@ -118,7 +118,140 @@ export function registerHandlers() {
         });
     });
 
-    
+    ipcMain.handle('get-partie-by-id', async(_event, id_partie:number) => {
+        return await prisma.partie.findUnique({
+            where: {id:id_partie}
+        })
+    });
+
+    ipcMain.handle('get-parties-by-joueur', async(_event, nom:string) => {
+        return await prisma.partieJoueur.findMany({
+            where: {nom_joueur:nom},
+            include:{partie: true}
+        })
+    });
+
+    ipcMain.handle('get-parties-by-vainqueur', async(_event, nom:string) => {
+        return await prisma.partie.findMany({
+            where: {
+                nom_vainqueur: nom
+            },
+            include: {
+                joueurs: true
+            }
+        })
+    });
+
+    ipcMain.handle('create-partie', async(_event, nb_questions:number) => {
+        return await prisma.partie.create({
+            data: {nb_questions:nb_questions}
+        })
+    });
+
+    ipcMain.handle('update-vainqueur', async(_event, id_partie:number, nom:string) => {
+        return await prisma.partie.update({
+            where: {
+                id:id_partie
+            },
+            data: {
+                nom_vainqueur:nom
+            }
+
+        })
+    });
+
+    ipcMain.handle('delete-partie', async(_event, id:number) => {
+        return await prisma.partie.delete ({
+            where : {id:id}
+        })
+    });
+
+    ipcMain.handle('get-partiejoueur-by-joueur', async(_event, nom:string) => {
+        return await prisma.partieJoueur.findMany ({
+            where : {nom_joueur:nom}
+        })
+    });
+
+    ipcMain.handle('get-partiejoueur-by-partie', async(_event, id:number) => {
+        return await prisma.partieJoueur.findMany ({
+            where: {id_partie:id}
+        })
+    });
+
+    ipcMain.handle('get-classement-by-partie', async(_event, id:number) => {
+        return await prisma.partieJoueur.findMany({
+            where: { id_partie: id },
+            orderBy: { points: 'desc' }
+        })
+    });
+
+    ipcMain.handle('create-partiejoueur', async(_event, id_partie:number, nom_joueur:string) => {
+        return await prisma.partieJoueur.create({
+            data: {
+                nom_joueur:nom_joueur,
+                id_partie:id_partie,
+                points:0
+            }
+        })
+    });
+
+    ipcMain.handle('update-points-joueur', async(_event, id_partie:number, nom_joueur:string, points_gagnes:number) => {
+        return await prisma.partieJoueur.update({
+            where: {
+                nom_joueur_id_partie: {
+                    id_partie: id_partie,
+                    nom_joueur: nom_joueur
+                }
+            },
+            data: {
+                points: { increment: points_gagnes }
+            }
+        })
+    });
+
+    ipcMain.handle('get-partiequestion-by-partie', async(_event, id:number) => {
+        return await prisma.partieQuestion.findMany({
+            where: {
+                id_partie:id
+            }
+        })
+
+    });
+
+    ipcMain.handle('create-partiequestion', async(_event, id_partie:number, id_question:number, ordre:number) => {
+        return await prisma.partieQuestion.create({
+            data:{
+                id_partie:id_partie,
+                id_question:id_question,
+                ordre:ordre
+            }
+        })
+    });
+
+    ipcMain.handle('update-repondant', async(_event, id_partie:number, id_question:number, id_joueur:string) => {
+        return await prisma.partieQuestion.update({
+            where: {
+                id_partie_id_question: {
+                    id_partie: id_partie,
+                    id_question: id_question
+                }
+            },
+            data: {
+                id_joueur: id_joueur
+            }
+        })
+    });
+
+    ipcMain.handle('delete-partiequestion', async(_event, id_partie:number, id_question:number) => {
+        return await prisma.partieQuestion.delete({
+            where: {
+                id_partie_id_question: {
+                    id_partie: id_partie,
+                    id_question: id_question
+                }
+            }
+        })
+    });
 
 
 }

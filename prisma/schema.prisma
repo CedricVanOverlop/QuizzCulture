@@ -65,6 +65,7 @@ model PartieJoueur {
   points     Int
   joueur     Joueur @relation(fields: [nom_joueur], references: [nom])
   partie     Partie @relation(fields: [id_partie], references: [id])
+  partie Partie @relation(fields: [id_partie], references: [id], onDelete: Cascade)
 
   @@id([nom_joueur, id_partie])
 }
@@ -77,6 +78,7 @@ model PartieQuestion {
   partie      Partie   @relation(fields: [id_partie], references: [id])
   question    Question @relation(fields: [id_question], references: [id])
   joueur      Joueur?  @relation(fields: [id_joueur], references: [nom])
+  partie Partie @relation(fields: [id_partie], references: [id], onDelete: Cascade)
 
   @@id([id_partie, id_question])
 }
