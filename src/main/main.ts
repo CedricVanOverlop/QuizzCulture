@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
+import { registerHandlers } from '../ipc/handlers';
 
 if (started) app.quit();
 
@@ -20,5 +21,6 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
+  registerHandlers();
   createWindow();
 });
