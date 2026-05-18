@@ -10,6 +10,7 @@ export const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},
     {path: 'home', component : Home},
     {path: 'historique', component : Historique},
+    {path: 'historique/:nom', component : Historique},
     {path: 'jouer', component : Jouer},
     {path: 'joueurs', component : Joueurs},
     {path: 'succes', component : Succes},

@@ -1,0 +1,170 @@
+.joueurs-container {
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #e8a830;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      #c8861888 61px,
+      transparent 62px
+    ),
+    radial-gradient(ellipse at 50% 0%, #f5c84233 0%, transparent 60%);
+
+  h1 {
+    font-family: 'Georgia', serif;
+    font-size: 2.5rem;
+    color: #3d1f00;
+    text-align: center;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 #f5d88088, 0 2px 8px #00000022;
+    margin-bottom: 2rem;
+  }
+
+  .erreur {
+    color: #8b0000;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-family: 'Georgia', serif;
+  }
+
+  .grille {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .carte {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #a0620077;
+    border-radius: 12px;
+    background: #c8781844;
+    box-shadow: 0 2px 12px #00000022, inset 0 1px 0 #f5d88033;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: #3d1f00aa;
+      box-shadow: 0 4px 20px #00000033;
+    }
+
+    .nom {
+      font-family: 'Georgia', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #3d1f00;
+      letter-spacing: 1px;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: #3d1f00cc;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+
+      button {
+        width: 80%;
+        padding: 0.6rem 1rem;
+        background: #f5c842;
+        color: #3d1f00;
+        font-weight: 700;
+        font-family: 'Georgia', serif;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 2px 0 #a07820;
+
+        &:hover {
+          filter: brightness(1.1);
+        }
+      }
+    }
+  }
+
+  .carte-vide {
+    span {
+      font-size: 2.5rem;
+      color: #3d1f0066;
+      transition: color 0.2s ease;
+    }
+
+    &:hover span {
+      color: #3d1f00;
+    }
+  }
+
+  .carte-ajout {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+
+    input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      background: #f5e8cc;
+      border: 1px solid #a0620077;
+      border-radius: 6px;
+      color: #3d1f00;
+      font-family: 'Georgia', serif;
+      text-align: center;
+
+      &::placeholder {
+        color: #a0620088;
+      }
+    }
+
+    button {
+      width: 80%;
+      padding: 0.5rem;
+      background: #3d1f00cc;
+      color: #f5c842;
+      font-weight: 700;
+      font-family: 'Georgia', serif;
+      border: 1px solid #f5c84244;
+      border-radius: 6px;
+      cursor: pointer;
+
+      &:last-child {
+        background: transparent;
+        color: #3d1f00;
+        border: 1px solid #3d1f0044;
+      }
+    }
+  }
+
+  .backHome {
+    position: fixed;
+    top: 1.25rem;
+    left: 1.25rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #3d1f0077;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      color: #3d1f00;
+      transform: scale(1.2);
+    }
+  }
+}

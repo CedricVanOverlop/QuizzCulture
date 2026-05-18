@@ -1,1 +1,36 @@
-<p>joueurs works!</p>
+<div class="joueurs-container">
+  <button class = "backHome" routerLink="/home">X</button>
+  <h1>Joueurs</h1>
+
+  @if (erreur) {
+    <p class="erreur">{{ erreur }}</p>
+  }
+
+  <div class="grille">
+    @for (item of cartesAffichees(); track $index) {
+      @if (item !== null) {
+        <div class="carte" (mouseenter)="joueurSurvole.set(item.nom)" (mouseleave)="joueurSurvole.set(null)">
+          <span class="nom">{{ item.nom }}</span>
+          @if (joueurSurvole() === item.nom) {
+            <div class="overlay">
+              <button (click)="supprimer(item.nom)">Supprimer</button>
+              <button (click)="voirHistorique(item.nom)">Historique</button>
+            </div>
+          }
+        </div>
+      } @else {
+        @if (modeCreation() === $index) {
+          <div class="carte carte-ajout">
+            <input [(ngModel)]="nomInput" placeholder="Nom du joueur" (click)="$event.stopPropagation()" />
+            <button (click)="creerJoueur(); $event.stopPropagation()">Confirmer</button>
+            <button (click)="annuler(); $event.stopPropagation()">Annuler</button>
+          </div>
+        } @else {
+          <div class="carte carte-vide" (click)="modeCreation.set($index)">
+            <span>+</span>
+          </div>
+        }
+      }
+    }
+  </div>
+</div>
