@@ -54,13 +54,14 @@ export class Historique implements OnInit {
   });
 
   async ngOnInit() {
-    // Lire les paramètres de l'URL
-    const joueur = this.route.snapshot.paramMap.get('joueur') ?? 'tous';
-    const categorie = this.route.snapshot.paramMap.get('categorie') ?? 'tous';
-    this.filtreJoueur.set(joueur);
-    this.filtreCategorie.set(categorie);
+    this.route.paramMap.subscribe(async params => {
+      const joueur = params.get('joueur') ?? 'tous';
+      const categorie = params.get('categorie') ?? 'tous';
+      this.filtreJoueur.set(joueur);
+      this.filtreCategorie.set(categorie);
+    });
 
-    // Charger les données
+    // Charger les données une seule fois
     this.parties.set(await this.partieService.getAllParties());
     this.joueurs.set(await this.joueurService.getAllJoueurs());
     this.categories.set(await this.questionService.getAllCategories());
