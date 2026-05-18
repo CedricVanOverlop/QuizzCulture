@@ -11,7 +11,6 @@ import { JoueurService } from '../../services/joueur';
 })
 export class Joueurs implements OnInit {
 
-  // Les 3 signals
   joueurs = signal<{nom: string}[]>([]);
   joueurSurvole = signal<string | null>(null);
   modeCreation = signal<number | null>(null); // stocke l'index de la case cliquée

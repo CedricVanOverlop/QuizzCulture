@@ -1,0 +1,203 @@
+.historique-container {
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #e8a830;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      #c8861888 61px,
+      transparent 62px
+    ),
+    radial-gradient(ellipse at 50% 0%, #f5c84233 0%, transparent 60%);
+
+  h1 {
+    font-family: 'Georgia', serif;
+    font-size: 2.5rem;
+    color: #3d1f00;
+    text-align: center;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 #f5d88088, 0 2px 8px #00000022;
+    margin-bottom: 2rem;
+  }
+
+  .backHome {
+    position: fixed;
+    top: 1.25rem;
+    left: 1.25rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #3d1f0077;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      color: #3d1f00;
+      transform: scale(1.2);
+    }
+  }
+
+  .filtres {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    select {
+      padding: 0.6rem 1rem;
+      background: #3d1f00cc;
+      color: #f5c842;
+      font-family: 'Georgia', serif;
+      font-size: 0.95rem;
+      border: 1px solid #f5c84244;
+      border-radius: 8px;
+      cursor: pointer;
+      outline: none;
+
+      option {
+        background: #3d1f00;
+        color: #f5c842;
+      }
+
+      &:hover {
+        border-color: #f5c84288;
+      }
+    }
+  }
+
+  .liste-parties {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .carte-partie {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr 1fr;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: #c8781844;
+    border: 2px solid #a0620077;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      border-color: #3d1f00aa;
+      background: #c8781866;
+    }
+
+    .partie-id {
+      font-family: 'Georgia', serif;
+      font-weight: 700;
+      color: #3d1f0088;
+      font-size: 0.9rem;
+    }
+
+    .partie-questions {
+      font-family: 'Georgia', serif;
+      color: #3d1f00;
+      font-weight: 600;
+    }
+
+    .partie-categorie {
+      font-family: 'Georgia', serif;
+      color: #3d1f00;
+      font-style: italic;
+    }
+
+    .partie-vainqueur {
+      font-family: 'Georgia', serif;
+      color: #3d1f00;
+      font-weight: 700;
+      text-align: right;
+    }
+  }
+
+  .overlay-detail {
+    position: fixed;
+    inset: 0;
+    background: #00000055;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    z-index: 100;
+
+    .panneau-detail {
+      width: 360px;
+      height: 100vh;
+      background: #e8a830;
+      background-image: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 60px,
+        #c8861888 61px,
+        transparent 62px
+      );
+      padding: 2rem;
+      box-shadow: -8px 0 32px #00000044;
+      overflow-y: auto;
+      position: relative;
+
+      h2 {
+        font-family: 'Georgia', serif;
+        font-size: 1.8rem;
+        color: #3d1f00;
+        margin-bottom: 1.5rem;
+        letter-spacing: 2px;
+      }
+
+      h3 {
+        font-family: 'Georgia', serif;
+        font-size: 1.2rem;
+        color: #3d1f00;
+        margin: 1.5rem 0 0.75rem;
+        border-bottom: 1px solid #3d1f0033;
+        padding-bottom: 0.5rem;
+      }
+
+      p {
+        font-family: 'Georgia', serif;
+        color: #3d1f00;
+        margin: 0.5rem 0;
+      }
+
+      .fermer {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        color: #3d1f0077;
+        cursor: pointer;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: #3d1f00;
+        }
+      }
+
+      .joueur-ligne {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0.75rem;
+        background: #c8781833;
+        border-radius: 6px;
+        margin-bottom: 0.5rem;
+        font-family: 'Georgia', serif;
+        color: #3d1f00;
+        font-weight: 600;
+      }
+    }
+  }
+}

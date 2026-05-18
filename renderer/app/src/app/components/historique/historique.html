@@ -1,1 +1,51 @@
-<p>historique works!</p>
+<div class="historique-container">
+  <button class="backHome" routerLink="/home">✕</button>
+  <h1>Historique</h1>
+
+  <div class="filtres">
+    <select (change)="changerFiltre($any($event.target).value, filtreCategorie())">
+      <option value="tous">Tous les joueurs</option>
+      @for (joueur of joueurs(); track joueur.nom) {
+        <option [value]="joueur.nom">{{ joueur.nom }}</option>
+      }
+    </select>
+
+    <select (change)="changerFiltre(filtreJoueur(), $any($event.target).value)">
+      <option value="tous">Toutes les catégories</option>
+      <option value="0">Mixte</option>
+      @for (cat of categories(); track cat.id) {
+        <option [value]="cat.id">{{ cat.libelle }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="liste-parties">
+    @for (partie of partiesFiltrees(); track partie.id) {
+      <div class="carte-partie" (click)="ouvrirDetail(partie)">
+        <span class="partie-id">#{{ partie.id }}</span>
+        <span class="partie-questions">{{ partie.nb_questions }} questions</span>
+        <span class="partie-categorie">{{ partie.categorie?.libelle ?? 'Mixte' }}</span>
+        <span class="partie-vainqueur">🏆 {{ partie.nom_vainqueur ?? 'Aucun' }}</span>
+      </div>
+    }
+  </div>
+
+  @if (partieSelectionnee() !== null) {
+    <div class="overlay-detail" (click)="fermerDetail()">
+      <div class="panneau-detail" (click)="$event.stopPropagation()">
+        <button class="fermer" (click)="fermerDetail()">✕</button>
+        <h2>Partie #{{ partieSelectionnee().id }}</h2>
+        <p>Questions : {{ partieSelectionnee().nb_questions }}</p>
+        <p>Catégorie : {{ partieSelectionnee().categorie?.libelle ?? 'Mixte' }}</p>
+        <p>Vainqueur : {{ partieSelectionnee().nom_vainqueur ?? 'Aucun' }}</p>
+        <h3>Joueurs</h3>
+        @for (j of partieSelectionnee().joueurs; track j.nom_joueur) {
+          <div class="joueur-ligne">
+            <span>{{ j.nom_joueur }}</span>
+            <span>{{ j.points }} pts</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
