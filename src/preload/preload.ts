@@ -24,6 +24,9 @@ contextBridge.exposeInMainWorld('api', {
     getCategorie: (id_cat: number) =>
         ipcRenderer.invoke('get-categorie', id_cat),
 
+    getAllCategories: () =>
+        ipcRenderer.invoke('get-all-categories'),
+
     // Questions
     getQuestionRandom: () =>
         ipcRenderer.invoke('get-question-random'),
@@ -43,12 +46,14 @@ contextBridge.exposeInMainWorld('api', {
         ipcRenderer.invoke('get-parties-by-joueur', nom),
     getPartiesByVainqueur: (nom: string) =>
         ipcRenderer.invoke('get-parties-by-vainqueur', nom),
-    createPartie: (nb_questions: number) =>
-        ipcRenderer.invoke('create-partie', nb_questions),
+    createPartie: (nb_questions: number, id_categorie: number | null) =>
+        ipcRenderer.invoke('create-partie', nb_questions, id_categorie),
     updateVainqueur: (id_partie: number, nom: string) =>
         ipcRenderer.invoke('update-vainqueur', id_partie, nom),
     deletePartie: (id: number) =>
         ipcRenderer.invoke('delete-partie', id),
+    getAllParties: () =>
+    ipcRenderer.invoke('get-all-parties'),
 
     // PartieJoueur
     getPartieJoueurByJoueur: (nom: string) =>

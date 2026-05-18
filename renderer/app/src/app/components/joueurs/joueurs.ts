@@ -64,7 +64,7 @@ export class Joueurs implements OnInit {
   }
 
   voirHistorique(nom: string) {
-    this.router.navigate(['/historique', nom]);
+    this.router.navigate(['/historique', nom, 'tous']);
   }
 
   annuler() {

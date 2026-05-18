@@ -27,6 +27,7 @@ model Categorie {
   libelle     String
   description String
   questions   Question[]
+  parties   Partie[]
 }
 
 model Question {
@@ -42,11 +43,13 @@ model Question {
 }
 
 model Partie {
-  id              Int              @id @default(autoincrement())
-  nb_questions    Int
-  nom_vainqueur   String?
-  vainqueur       Joueur?          @relation(fields: [nom_vainqueur], references: [nom])
-  joueurs         PartieJoueur[]
+  id            Int              @id @default(autoincrement())
+  nb_questions  Int
+  nom_vainqueur String?
+  id_categorie  Int?             // nullable — null = plusieurs thèmes
+  vainqueur     Joueur?          @relation(fields: [nom_vainqueur], references: [nom])
+  categorie     Categorie?       @relation(fields: [id_categorie], references: [id])
+  joueurs       PartieJoueur[]
   partieQuestions PartieQuestion[]
 }
 

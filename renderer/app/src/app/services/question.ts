@@ -29,4 +29,8 @@ export class QuestionService {
   async getCategorie(id_cat: number) {
     return await this.api.getCategorie(id_cat);
   }
+
+  async getAllCategories() {
+    return await this.api.getAllCategories();
+  }
 }

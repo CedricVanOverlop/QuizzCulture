@@ -18,8 +18,8 @@ export class PartieService {
     return await this.api.getPartiesByVainqueur(nom);
   }
 
-  async createPartie(nb_questions: number) {
-    return await this.api.createPartie(nb_questions);
+  async createPartie(nb_questions: number, id_categorie: number | null) {
+      return await this.api.createPartie(nb_questions, id_categorie);
   }
 
   async updateVainqueur(id_partie: number, nom: string) {
@@ -64,5 +64,9 @@ export class PartieService {
 
   async deletePartieQuestion(id_partie: number, id_question: number) {
     return await this.api.deletePartieQuestion(id_partie, id_question);
+  }
+
+  async getAllParties() {
+    return await this.api.getAllParties();
   }
 }
