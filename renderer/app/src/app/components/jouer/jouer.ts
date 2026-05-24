@@ -5,7 +5,7 @@ import { JoueurService } from '../../services/joueur';
 import { QuestionService } from '../../services/question';
 import { PartieService } from '../../services/partie';
 import { Joueur } from '../../types/joueur';
-import { Categorie } from '../../types/question';
+import { Categorie, Question } from '../../types/question';
 
 @Component({
   selector: 'app-jouer',
@@ -16,16 +16,16 @@ import { Categorie } from '../../types/question';
 })
 export class Jouer implements OnInit {
 
-  private fb        = inject(FormBuilder);
-  private router    = inject(Router);
+  private fb              = inject(FormBuilder);
+  private router          = inject(Router);
   private joueurService   = inject(JoueurService);
   private questionService = inject(QuestionService);
   private partieService   = inject(PartieService);
 
-  joueurs    = signal<Joueur[]>([]);
-  categories = signal<Categorie[]>([]);
+  joueurs      = signal<Joueur[]>([]);
+  categories   = signal<Categorie[]>([]);
   selectionnes = signal<string[]>([]);
-  erreur = signal<string>('');
+  erreur       = signal<string>('');
 
   // Formulaire réactif
   form = this.fb.group({
@@ -37,7 +37,7 @@ export class Jouer implements OnInit {
   multiplesValides = computed(() => {
     const nb = this.selectionnes().length;
     if (nb === 0) return [];
-    const multiples = [];
+    const multiples: number[] = [];
     for (let i = nb; i <= 50; i += nb) {
       multiples.push(i);
     }
@@ -86,7 +86,7 @@ export class Jouer implements OnInit {
     }
 
     // 3. Tirer les questions
-    let questions: any[];
+    let questions: Question[];
     if (idCategorie) {
       questions = await this.questionService.getManyQuestionByCategorie(idCategorie, nbQuestions!);
     } else {

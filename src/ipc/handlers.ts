@@ -25,12 +25,16 @@ export function registerHandlers() {
 
     ipcMain.handle('delete-joueur', async (_event, nom: string) => {
         try {
-            return await prisma.joueur.delete({
-                where: { nom: nom }
-            })
-        } catch (error){
+            await prisma.joueurSucces.deleteMany({ where: { nom_joueur: nom } });
+            await prisma.partieQuestion.updateMany({
+                where: { id_joueur: nom },
+                data: { id_joueur: null }
+            });
+            await prisma.partieJoueur.deleteMany({ where: { nom_joueur: nom } });
+            return await prisma.joueur.delete({ where: { nom } });
+        } catch (error) {
             console.error('message', error);
-            throw error; 
+            throw error;
         }
     });
 
@@ -269,13 +273,15 @@ export function registerHandlers() {
             where: { id: id_partie },
             include: { joueurs: true, partieQuestions: true, categorie: true }
         });
-        if (!partie) return;
+        if (!partie) return [];
 
         const joueursPartie = partie.joueurs.map((j: any) => j.nom_joueur);
 
+        // Libellés des succès nouvellement débloqués (toutes joueurs confondus)
+        const nouveauxSucces: { joueur: string, libelle: string }[] = [];
+
         for (const nom of joueursPartie) {
 
-            // Succès déjà débloqués pour ce joueur
             const dejaDébloques = await prisma.joueurSucces.findMany({ where: { nom_joueur: nom } });
             const idsDebloques = new Set(dejaDébloques.map((js: any) => js.id_succes));
 
@@ -283,6 +289,8 @@ export function registerHandlers() {
                 if (!idsDebloques.has(id)) {
                     await prisma.joueurSucces.create({ data: { nom_joueur: nom, id_succes: id } });
                     idsDebloques.add(id);
+                    const succes = await prisma.succes.findUnique({ where: { id } });
+                    if (succes) nouveauxSucces.push({ joueur: nom, libelle: succes.libelle });
                 }
             };
 
@@ -331,11 +339,8 @@ export function registerHandlers() {
             }
 
             // ── Succès 11 : Grand Explorateur ────────────────────────────────
-            // Vérifie victoire dans chaque catégorie + Mixte
-            const nbCategories = await prisma.categorie.count();
             let grandExplorateur = true;
 
-            // Victoire en Mixte
             const victoireMixte = await prisma.partie.findFirst({
                 where: { nom_vainqueur: nom, id_categorie: null }
             });
@@ -352,5 +357,13 @@ export function registerHandlers() {
             }
             if (grandExplorateur) await unlock(11);
         }
+
+        return nouveauxSucces;
+    });
+
+    ipcMain.handle('count-victoires', async (_event, nom: string) => {
+        return await prisma.partie.count({
+            where: { nom_vainqueur: nom }
+        });
     });
 }

@@ -1,9 +1,9 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, effect } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PartieService } from '../../services/partie';
 import { QuestionService } from '../../services/question';
-import { PartieQuestionAvecDetail } from '../../types/partie';
+import { PartieJoueur, PartieQuestionAvecDetail } from '../../types/partie';
 
 type Mode = 'cash' | 'carre' | 'duo';
 
@@ -32,15 +32,14 @@ export class Partie implements OnInit {
   partieTerminee = signal<boolean>(false);
   classement     = signal<{ nom_joueur: string, points: number }[]>([]);
 
+  // Liste des succès nouvellement débloqués à afficher
+  succesDebloques = signal<{ joueur: string, libelle: string }[]>([]);
+
   cashInput = '';
 
-  // Question courante
   questionCourante = computed(() => this.questions()[this.indexQuestion()] ?? null);
+  joueurActif      = computed(() => this.joueurs()[this.indexJoueur()] ?? '');
 
-  // Joueur actif
-  joueurActif = computed(() => this.joueurs()[this.indexJoueur()] ?? '');
-
-  // Propositions selon le mode — la bonne réponse est mélangée parmi les mauvaises
   propositions = computed(() => {
     const q = this.questionCourante();
     const mode = this.modeChoisi();
@@ -54,11 +53,9 @@ export class Partie implements OnInit {
     const melange = [...mauvaises].sort(() => Math.random() - 0.5);
 
     if (mode === 'carre') {
-      // 4 propositions : les 3 mauvaises + la bonne, mélangées
       return [...mauvaises, q.question.reponse].sort(() => Math.random() - 0.5);
     }
     if (mode === 'duo') {
-      // 2 propositions : 1 mauvaise + la bonne, mélangées
       return [melange[0], q.question.reponse].sort(() => Math.random() - 0.5);
     }
     return [];
@@ -66,15 +63,25 @@ export class Partie implements OnInit {
 
   points: Record<Mode, number> = { cash: 3, carre: 2, duo: 1 };
 
+  constructor() {
+    // effect() : dès que des succès sont débloqués, les masquer après 4 secondes
+    effect(() => {
+      const succes = this.succesDebloques();
+      if (succes.length > 0) {
+        setTimeout(() => this.succesDebloques.set([]), 4000);
+      }
+    });
+  }
+
   async ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.partieId.set(id);
 
     const partie = await this.partieService.getPartieById(id);
-    this.joueurs.set(partie.joueurs.map((j: any) => j.nom_joueur));
+    this.joueurs.set(partie.joueurs.map((j: PartieJoueur) => j.nom_joueur));
 
     const questions = await this.partieService.getPartieQuestionByPartie(id);
-    const triees = questions.sort((a: any, b: any) => a.ordre - b.ordre);
+    const triees = (questions as PartieQuestionAvecDetail[]).sort((a, b) => a.ordre - b.ordre);
     this.questions.set(triees);
   }
 
@@ -84,30 +91,28 @@ export class Partie implements OnInit {
     this.cashInput = '';
   }
 
-  // Répondre en mode Carré ou Duo (bouton cliqué)
   async repondre(proposition: string) {
-      const q = this.questionCourante();
-      if (!q || this.feedback() !== null) return;
+    const q = this.questionCourante();
+    if (!q || this.feedback() !== null) return;
 
-      const resultat = await this.questionService.checkReponse(q.id_question);
-      const correct = proposition === resultat.reponse;
-      const pts = correct ? this.points[this.modeChoisi()!] : 0;
+    const resultat = await this.questionService.checkReponse(q.id_question);
+    const correct = proposition === resultat.reponse;
+    const pts = correct ? this.points[this.modeChoisi()!] : 0;
 
-      await this.partieService.updateRepondant(
-          this.partieId(), q.id_question, this.joueurActif(), correct, pts
-      );
+    await this.partieService.updateRepondant(
+      this.partieId(), q.id_question, this.joueurActif(), correct, pts
+    );
 
-      if (correct) {
-          await this.partieService.updatePointsJoueur(this.partieId(), this.joueurActif(), pts);
-          this.feedback.set('correct');
-      } else {
-          this.feedback.set('incorrect');
-      }
+    if (correct) {
+      await this.partieService.updatePointsJoueur(this.partieId(), this.joueurActif(), pts);
+      this.feedback.set('correct');
+    } else {
+      this.feedback.set('incorrect');
+    }
 
-      setTimeout(() => this.questionSuivante(), 1500);
+    setTimeout(() => this.questionSuivante(), 1500);
   }
 
-  // Répondre en mode Cash (input texte)
   async repondreCash(reponse: string) {
     const q = this.questionCourante();
     if (!q || this.feedback() !== null) return;
@@ -118,14 +123,14 @@ export class Partie implements OnInit {
     const pts = correct ? 3 : 0;
 
     await this.partieService.updateRepondant(
-        this.partieId(), q.id_question, this.joueurActif(), correct, pts
+      this.partieId(), q.id_question, this.joueurActif(), correct, pts
     );
 
     if (correct) {
-        await this.partieService.updatePointsJoueur(this.partieId(), this.joueurActif(), pts);
-        this.feedback.set('correct');
+      await this.partieService.updatePointsJoueur(this.partieId(), this.joueurActif(), pts);
+      this.feedback.set('correct');
     } else {
-        this.feedback.set('incorrect');
+      this.feedback.set('incorrect');
     }
 
     setTimeout(() => this.questionSuivante(), 1500);
@@ -148,20 +153,25 @@ export class Partie implements OnInit {
   }
 
   async terminerPartie() {
-      const classement = await this.partieService.getClassementByPartie(this.partieId());
-      this.classement.set(classement);
+    const classement = await this.partieService.getClassementByPartie(this.partieId());
+    this.classement.set(classement);
 
-      if (classement.length > 0) {
-          const premier = classement[0];
-          const deuxieme = classement[1];
-          const egalite = deuxieme && premier.points === deuxieme.points;
+    if (classement.length > 0) {
+      const premier  = classement[0];
+      const deuxieme = classement[1];
+      const egalite  = deuxieme && premier.points === deuxieme.points;
 
-          if (!egalite) {
-              await this.partieService.updateVainqueur(this.partieId(), premier.nom_joueur);
-          }
+      if (!egalite) {
+        await this.partieService.updateVainqueur(this.partieId(), premier.nom_joueur);
       }
+    }
 
-      await this.partieService.checkAndUnlockSucces(this.partieId());
-      this.partieTerminee.set(true);
+    // Récupère les succès nouvellement débloqués → déclenche l'effect()
+    const nouveaux = await this.partieService.checkAndUnlockSucces(this.partieId());
+    if (nouveaux && nouveaux.length > 0) {
+      this.succesDebloques.set(nouveaux);
+    }
+
+    this.partieTerminee.set(true);
   }
 }

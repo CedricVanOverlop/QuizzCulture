@@ -1,5 +1,5 @@
 <div class="joueurs-container">
-  <button class = "backHome" routerLink="/home">X</button>
+  <button class="backHome" routerLink="/home">X</button>
   <h1>Joueurs</h1>
 
   @if (erreur) {
@@ -11,6 +11,7 @@
       @if (item !== null) {
         <div class="carte" (mouseenter)="joueurSurvole.set(item.nom)" (mouseleave)="joueurSurvole.set(null)">
           <span class="nom">{{ item.nom }}</span>
+          <span class="victoires">🏆 {{ victoires()[item.nom] || 0 }} victoire(s)</span>
           @if (joueurSurvole() === item.nom) {
             <div class="overlay">
               <button (click)="supprimer(item.nom)">Supprimer</button>

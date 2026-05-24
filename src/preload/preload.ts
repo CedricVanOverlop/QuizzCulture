@@ -81,5 +81,8 @@ contextBridge.exposeInMainWorld('api', {
 
     checkAndUnlockSucces: (id_partie: number) =>
         ipcRenderer.invoke('check-and-unlock-succes', id_partie),
+    
+    countVictoires: (nom: string) =>
+        ipcRenderer.invoke('count-victoires', nom),
 
 });

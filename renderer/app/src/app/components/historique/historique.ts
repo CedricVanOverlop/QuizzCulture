@@ -49,7 +49,7 @@ export class Historique implements OnInit {
       liste = liste.filter(p => p.id_categorie === Number(cat));
     }
 
-    return liste;
+    return liste.reverse();
   });
 
   async ngOnInit() {

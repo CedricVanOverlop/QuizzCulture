@@ -17,4 +17,8 @@ export class JoueurService {
   async deleteJoueur(nom: string) {
     return await this.api.deleteJoueur(nom);
   }
+
+  async countVictoires(nom: string): Promise<number> {
+    return await this.api.countVictoires(nom);
+  }
 }
