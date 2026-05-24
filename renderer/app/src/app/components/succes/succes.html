@@ -1,1 +1,31 @@
-<p>succes works!</p>
+<div class="succes-container">
+    <h1>Succès</h1>
+    <button class="btn-retour" routerLink="/home">✕</button>
+  <div class="header">
+    <select
+      class="joueur-select"
+      [ngModel]="joueurSelectionne()"
+      (ngModelChange)="onJoueurChange($event)">
+      <option value="">— Tous les succès —</option>
+      @for (joueur of joueurs(); track joueur.nom) {
+        <option [value]="joueur.nom">{{ joueur.nom }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="succes-grid">
+    @for (succes of succesAvecEtat(); track succes.id) {
+      <div class="succes-card"
+           [class.debloque]="succes.debloque === true"
+           [class.verrouille]="succes.debloque === false">
+        <div class="succes-icon">
+          {{ succes.debloque === true ? '★' : succes.debloque === false ? '☆' : '✦' }}
+        </div>
+        <div class="succes-info">
+          <span class="succes-libelle">{{ succes.libelle }}</span>
+          <span class="succes-description">{{ succes.description }}</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>

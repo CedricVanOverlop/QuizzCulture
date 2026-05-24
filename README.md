@@ -156,20 +156,30 @@ npm install
 Cette étape est obligatoire et distincte du npm install classique car better-sqlite3 doit être compilé spécifiquement pour la version d'Electron embarquée dans le projet.
 
 ```bash
-npm install better-sqlite3 --build-from-source --runtime=electron --target=42.1.0 --dist-url=https://electronjs.org/headers
+npm install better-sqlite3 --build-from-source --runtime=electron --target=35.0.0 --dist-url=https://electronjs.org/headers
 ```
 
-### 4. Générer le client Prisma et créer la base de données
+### 4. Créer le fichier d'environnement
+
+Créez un fichier `.env` à la racine du projet avec le contenu suivant :
+
+```
+DATABASE_URL="file:./dev.db"
+```
+
+> Ce fichier est ignoré par Git (`.gitignore`), il doit donc être recréé manuellement sur chaque machine.
+
+### 5. Générer le client Prisma et créer la base de données
 
 ```bash
 npx prisma migrate deploy
 npx prisma generate
 ```
 
-prisma migrate deploy applique les migrations existantes et crée le fichier dev.db.
-prisma generate génère le client TypeScript dans src/prisma/generated/.
+`prisma migrate deploy` applique les migrations existantes et crée le fichier `dev.db`.
+`prisma generate` génère le client TypeScript dans `src/prisma/generated/`.
 
-### 5. Installer les dépendances Angular et builder le renderer
+### 6. Installer les dépendances Angular et builder le renderer
 
 ```bash
 cd renderer/app
@@ -178,7 +188,7 @@ ng build
 cd ../..
 ```
 
-### 6. Lancer l'application
+### 7. Lancer l'application
 
 ```bash
 npm start
@@ -222,6 +232,7 @@ quiz-app/
 ├── prisma/
 │   ├── schema.prisma            # Schéma de la base de données
 │   └── migrations/              # Migrations SQL versionnées
+├── .env                         # Variables d'environnement (à créer manuellement, non versionné)
 ├── forge.config.ts              # Configuration Electron Forge
 ├── vite.main.config.mts         # Configuration Vite (main process)
 ├── vite.preload.config.mts      # Configuration Vite (preload)

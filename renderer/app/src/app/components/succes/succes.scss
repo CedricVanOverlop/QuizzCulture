@@ -1,0 +1,116 @@
+.succes-container {
+  min-height: 100vh;
+  padding: 2rem;
+  background-color: #e8a830;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      #c8861888 61px,
+      transparent 62px
+    ),
+    radial-gradient(ellipse at 50% 0%, #f5c84233 0%, transparent 60%);
+
+  h1 {
+    font-family: 'Georgia', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #3d1f00;
+    text-align: center;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 #f5d88088, 0 2px 8px #00000033;
+    margin-bottom: 2rem;
+  }
+}
+
+.btn-retour {
+  position: fixed;
+  top: 1.25rem;
+  left: 1.25rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #3d1f0077;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    color: #3d1f00;
+    transform: scale(1.2);
+  }
+}
+
+.header {
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+}
+
+.joueur-select {
+  padding: 0.6rem 1rem;
+  background: #3d1f00cc;
+  color: #f5c842;
+  font-family: 'Georgia', serif;
+  font-size: 0.95rem;
+  border: 1px solid #f5c84244;
+  border-radius: 8px;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: #f5c842;
+  }
+
+  option {
+    background: #3d1f00;
+    color: #f5c842;
+  }
+}
+
+.succes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.succes-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid #f5c84244;
+  background: #3d1f00cc;
+  box-shadow: 0 2px 0 #1a0a00, 0 4px 12px #00000033;
+  transition: all 0.2s ease;
+
+  .succes-icon { color: #f5c84299; font-size: 1.2rem; }
+  .succes-libelle { color: #f5c842; font-family: 'Georgia', serif; font-weight: 700; font-size: 0.95rem; }
+  .succes-description { color: #c9a97a; font-size: 0.8rem; }
+
+  &.debloque {
+    border-color: #f5c842aa;
+    background: #3d1f00ee;
+    box-shadow: 0 2px 0 #1a0a00, 0 4px 16px #f5c84222;
+    filter: brightness(1.05);
+
+    .succes-icon { color: #f5c842; }
+  }
+
+  &.verrouille {
+    opacity: 0.35;
+    filter: grayscale(1);
+  }
+}
+
+.succes-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}

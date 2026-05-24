@@ -2,6 +2,7 @@ import { ipcMain } from 'electron';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from '../prisma/generated/client.js';
 import path from 'node:path';
+import { Partie } from 'renderer/app/src/app/components/jouer/partie/partie.js';
 
 const dbPath = path.join(__dirname, '..', '..', 'dev.db');
 const adapter = new PrismaBetterSqlite3({ url: 'file:' + dbPath });
