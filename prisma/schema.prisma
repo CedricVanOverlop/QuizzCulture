@@ -9,6 +9,7 @@ datasource db {
 
 model Joueur {
   nom             String           @id
+  actif           Boolean          @default(true)
   parties         Partie[]
   partieJoueurs   PartieJoueur[]
   partieQuestions PartieQuestion[]

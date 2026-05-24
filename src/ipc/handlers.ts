@@ -9,29 +9,40 @@ const prisma = new PrismaClient({ adapter });
 
 export function registerHandlers() {
     ipcMain.handle('get-all-joueurs', async () => {
-        return await prisma.joueur.findMany();
+        return await prisma.joueur.findMany({
+            where: { actif: true }
+        });
     });
 
     ipcMain.handle('create-joueur', async (_event, nom: string) => {
         try {
+            // Vérifie si le joueur existe déjà (actif ou inactif)
+            const existant = await prisma.joueur.findUnique({ where: { nom } });
+
+            if (existant) {
+                // Réactive le joueur existant avec tout son historique
+                return await prisma.joueur.update({
+                    where: { nom },
+                    data: { actif: true }
+                });
+            }
+
+            // Sinon crée un nouveau joueur
             return await prisma.joueur.create({
-                data: { nom: nom }
-            })
-        } catch (error){
+                data: { nom, actif: true }
+            });
+        } catch (error) {
             console.error('message', error);
-            throw error; 
+            throw error;
         }
     });
 
     ipcMain.handle('delete-joueur', async (_event, nom: string) => {
         try {
-            await prisma.joueurSucces.deleteMany({ where: { nom_joueur: nom } });
-            await prisma.partieQuestion.updateMany({
-                where: { id_joueur: nom },
-                data: { id_joueur: null }
+            return await prisma.joueur.update({
+                where: { nom },
+                data: { actif: false }
             });
-            await prisma.partieJoueur.deleteMany({ where: { nom_joueur: nom } });
-            return await prisma.joueur.delete({ where: { nom } });
         } catch (error) {
             console.error('message', error);
             throw error;
