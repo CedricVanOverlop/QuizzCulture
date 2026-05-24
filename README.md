@@ -21,7 +21,7 @@ Développée avec **Electron** (desktop), **Angular** (interface), **Prisma** (O
 
 ## Description du projet
 
-Quiz App est une application de bureau qui permet de :
+QuizzCulture est une application de bureau qui permet de :
 
 - **Gérer des joueurs** : créer, consulter et supprimer des joueurs
 - **Gérer des catégories** : organiser les questions par thème
@@ -141,8 +141,8 @@ Avant de commencer, assurez-vous d'avoir installé :
 ### 1. Cloner le dépôt
 
 ```bash
-git clone https://github.com/TON_USERNAME/quiz-app.git
-cd quiz-app
+git clone https://github.com/CedricVanOverlop/QuizzCulture.git
+cd QuizzCulture
 ```
 
 ### 2. Installer les dépendances Electron
@@ -213,7 +213,7 @@ L'application Electron s'ouvre.
 ## Structure du projet
 
 ```
-quiz-app/
+QuizzCulture/
 ├── src/
 │   ├── main/
 │   │   └── main.ts              # Process principal Electron (IPC handlers)

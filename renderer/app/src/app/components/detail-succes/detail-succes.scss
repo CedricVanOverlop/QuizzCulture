@@ -1,0 +1,98 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #00000055;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.panneau {
+  width: 420px;
+  background-color: #e8a830;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 60px,
+    #c8861888 61px,
+    transparent 62px
+  );
+  border: 2px solid #a0620088;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  box-shadow:
+    0 0 0 1px #f5c84233,
+    0 16px 48px #00000055;
+  position: relative;
+
+  h2 {
+    font-family: 'Georgia', serif;
+    font-size: 1.8rem;
+    color: #3d1f00;
+    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 #f5d88088;
+  }
+
+  .description {
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    color: #3d1f00;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #c8781833;
+    border-radius: 8px;
+    border-left: 3px solid #a06200;
+  }
+
+  .statut {
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    margin: 0;
+
+    &.debloque {
+      background: #c8781844;
+      color: #3d1f00;
+      border: 1px solid #a0620066;
+    }
+
+    &.non-debloque {
+      background: #3d1f0022;
+      color: #3d1f0099;
+      border: 1px solid #3d1f0033;
+    }
+
+    &.neutre {
+      background: transparent;
+      color: #5c320088;
+      border: 1px dashed #a0620044;
+      font-style: italic;
+      font-weight: 400;
+    }
+  }
+
+  .fermer {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #3d1f0077;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #3d1f00;
+    }
+  }
+}

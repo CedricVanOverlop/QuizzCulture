@@ -31,21 +31,9 @@
   </div>
 
   @if (partieSelectionnee() !== null) {
-    <div class="overlay-detail" (click)="fermerDetail()">
-      <div class="panneau-detail" (click)="$event.stopPropagation()">
-        <button class="fermer" (click)="fermerDetail()">✕</button>
-        <h2>Partie #{{ partieSelectionnee().id }}</h2>
-        <p>Questions : {{ partieSelectionnee().nb_questions }}</p>
-        <p>Catégorie : {{ partieSelectionnee().categorie?.libelle ?? 'Mixte' }}</p>
-        <p>Vainqueur : {{ partieSelectionnee().nom_vainqueur ?? 'Aucun' }}</p>
-        <h3>Joueurs</h3>
-        @for (j of partieSelectionnee().joueurs; track j.nom_joueur) {
-          <div class="joueur-ligne">
-            <span>{{ j.nom_joueur }}</span>
-            <span>{{ j.points }} pts</span>
-          </div>
-        }
-      </div>
-    </div>
+    <app-detail-partie
+      [partie]="partieSelectionnee()!"
+      (fermer)="fermerDetail()" />
   }
+
 </div>

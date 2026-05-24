@@ -214,7 +214,8 @@ export function registerHandlers() {
 
     ipcMain.handle('get-partiequestion-by-partie', async(_event, id: number) => {
         return await prisma.partieQuestion.findMany({
-            where: { id_partie: id }
+            where: { id_partie: id },
+            include: { question: true }
         })
     });
 

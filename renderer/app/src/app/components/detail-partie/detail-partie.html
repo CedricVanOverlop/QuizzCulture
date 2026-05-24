@@ -1,0 +1,29 @@
+<div class="overlay" (click)="onFermer()">
+  <div class="panneau" (click)="$event.stopPropagation()">
+
+    <button class="fermer" (click)="onFermer()">✕</button>
+
+    <h2>Partie #{{ partie().id }}</h2>
+    <p>Catégorie : {{ partie().categorie?.libelle ?? 'Mixte' }}</p>
+    <p>Nombre de questions : {{ partie().nb_questions }}</p>
+    <p>Vainqueur : {{ partie().nom_vainqueur ?? 'Aucun' }}</p>
+
+    <h3>Joueurs</h3>
+    @for (j of partie().joueurs; track j.nom_joueur) {
+      <div class="joueur-ligne">
+        <span>{{ j.nom_joueur }}</span>
+        <span>{{ j.points }} pts</span>
+      </div>
+    }
+
+    <h3>Questions</h3>
+    @for (pq of questions(); track pq.id_question) {
+      <div class="question-ligne">
+        <span class="ordre">{{ pq.ordre }}.</span>
+        <span class="interrogation">{{ pq.question.interrogation }}</span>
+        <span class="repondant">{{ pq.id_joueur ?? 'Sans réponse' }}</span>
+      </div>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,110 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #00000055;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 100;
+}
+
+.panneau {
+  width: 400px;
+  height: 100vh;
+  background-color: #e8a830;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 60px,
+    #c8861888 61px,
+    transparent 62px
+  );
+  padding: 2rem;
+  box-shadow: -8px 0 32px #00000044;
+  overflow-y: auto;
+  position: relative;
+
+  h2 {
+    font-family: 'Georgia', serif;
+    font-size: 1.8rem;
+    color: #3d1f00;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+  }
+
+  h3 {
+    font-family: 'Georgia', serif;
+    font-size: 1.2rem;
+    color: #3d1f00;
+    margin: 1.5rem 0 0.75rem;
+    border-bottom: 1px solid #3d1f0033;
+    padding-bottom: 0.5rem;
+  }
+
+  p {
+    font-family: 'Georgia', serif;
+    color: #3d1f00;
+    margin: 0.5rem 0;
+  }
+
+  .fermer {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #3d1f0077;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #3d1f00;
+    }
+  }
+
+  .joueur-ligne {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: #c8781833;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-family: 'Georgia', serif;
+    color: #3d1f00;
+    font-weight: 600;
+  }
+
+  .question-ligne {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: start;
+    gap: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    background: #c8781822;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-family: 'Georgia', serif;
+    color: #3d1f00;
+
+    .ordre {
+      font-weight: 700;
+      color: #3d1f0088;
+      font-size: 0.85rem;
+      padding-top: 2px;
+    }
+
+    .interrogation {
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .repondant {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: #5c3200;
+      white-space: nowrap;
+      padding-top: 2px;
+    }
+  }
+}

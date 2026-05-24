@@ -1,6 +1,7 @@
 <div class="succes-container">
     <h1>Succès</h1>
     <button class="btn-retour" routerLink="/home">✕</button>
+
   <div class="header">
     <select
       class="joueur-select"
@@ -14,18 +15,25 @@
   </div>
 
   <div class="succes-grid">
-    @for (succes of succesAvecEtat(); track succes.id) {
+    @for (s of succesAvecEtat(); track s.id) {
       <div class="succes-card"
-           [class.debloque]="succes.debloque === true"
-           [class.verrouille]="succes.debloque === false">
+           [class.debloque]="s.debloque === true"
+           [class.verrouille]="s.debloque === false"
+           (click)="ouvrirDetail(s)">
         <div class="succes-icon">
-          {{ succes.debloque === true ? '★' : succes.debloque === false ? '☆' : '✦' }}
+          {{ s.debloque === true ? '★' : s.debloque === false ? '☆' : '✦' }}
         </div>
         <div class="succes-info">
-          <span class="succes-libelle">{{ succes.libelle }}</span>
-          <span class="succes-description">{{ succes.description }}</span>
+          <span class="succes-libelle">{{ s.libelle }}</span>
         </div>
       </div>
     }
   </div>
+
+  @if (succesSelectionne() !== null) {
+    <app-detail-succes
+      [succes]="succesSelectionne()!"
+      (fermer)="fermerDetail()" />
+  }
+
 </div>

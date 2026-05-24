@@ -1,0 +1,19 @@
+<div class="overlay" (click)="onFermer()">
+  <div class="panneau" (click)="$event.stopPropagation()">
+
+    <button class="fermer" (click)="onFermer()">✕</button>
+
+    <h2>{{ succes().libelle }}</h2>
+
+    <p class="description">{{ succes().description }}</p>
+
+    @if (succes().debloque === true) {
+      <p class="statut debloque">✅ Succès débloqué</p>
+    } @else if (succes().debloque === false) {
+      <p class="statut non-debloque">🔒 Non débloqué</p>
+    } @else {
+      <p class="statut neutre">Sélectionne un joueur pour voir son statut</p>
+    }
+
+  </div>
+</div>
