@@ -113,7 +113,8 @@ export class Partie implements OnInit {
     if (!q || this.feedback() !== null) return;
 
     const resultat = await this.questionService.checkReponse(q.id_question);
-    const correct = reponse.trim().toLowerCase() === resultat.reponse.trim().toLowerCase();
+    const normalise = (s: string) => s.trim().toLowerCase().replace(/^(le|la|les|un|une|des|l'|l')\s+/, '');
+    const correct = normalise(reponse) === normalise(resultat.reponse);
     const pts = correct ? 3 : 0;
 
     await this.partieService.updateRepondant(
