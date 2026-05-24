@@ -2,7 +2,6 @@ import { ipcMain } from 'electron';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaClient } from '../prisma/generated/client.js';
 import path from 'node:path';
-import { Partie } from 'renderer/app/src/app/components/jouer/partie/partie.js';
 
 const dbPath = path.join(__dirname, '..', '..', 'dev.db');
 const adapter = new PrismaBetterSqlite3({ url: 'file:' + dbPath });
@@ -94,6 +93,14 @@ export function registerHandlers() {
         });
         const random = questions[Math.floor(Math.random() * questions.length)];
         return random;
+    });
+
+    ipcMain.handle('get-many-question-random', async(_event, nb_questions: number) => {
+        const questions = await prisma.question.findMany({
+            omit: { reponse: true }
+        });
+        const melange = questions.sort(() => Math.random() - 0.5);
+        return melange.slice(0, nb_questions);
     });
 
     ipcMain.handle('get-many-question-by-categorie', async(_event, id_cat: number, nb_questions: number) => {
@@ -229,7 +236,7 @@ export function registerHandlers() {
         })
     });
 
-    ipcMain.handle('update-repondant', async(_event, id_partie: number, id_question: number, id_joueur: string) => {
+    ipcMain.handle('update-repondant', async(_event, id_partie: number, id_question: number, id_joueur: string, est_correcte: boolean, points_gagnes: number) => {
         return await prisma.partieQuestion.update({
             where: {
                 id_partie_id_question: {
@@ -237,7 +244,11 @@ export function registerHandlers() {
                     id_question: id_question
                 }
             },
-            data: { id_joueur: id_joueur }
+            data: {
+                joueur: { connect: { nom: id_joueur } },
+                est_correcte: est_correcte,
+                points_gagnes: points_gagnes
+            }
         })
     });
 
@@ -250,5 +261,96 @@ export function registerHandlers() {
                 }
             }
         })
+    });
+
+    ipcMain.handle('check-and-unlock-succes', async (_event, id_partie: number) => {
+
+        const partie = await prisma.partie.findUnique({
+            where: { id: id_partie },
+            include: { joueurs: true, partieQuestions: true, categorie: true }
+        });
+        if (!partie) return;
+
+        const joueursPartie = partie.joueurs.map((j: any) => j.nom_joueur);
+
+        for (const nom of joueursPartie) {
+
+            // Succès déjà débloqués pour ce joueur
+            const dejaDébloques = await prisma.joueurSucces.findMany({ where: { nom_joueur: nom } });
+            const idsDebloques = new Set(dejaDébloques.map((js: any) => js.id_succes));
+
+            const unlock = async (id: number) => {
+                if (!idsDebloques.has(id)) {
+                    await prisma.joueurSucces.create({ data: { nom_joueur: nom, id_succes: id } });
+                    idsDebloques.add(id);
+                }
+            };
+
+            // ── Succès 1 : Première victoire ─────────────────────────────────
+            if (partie.nom_vainqueur === nom) {
+                const nbVictoires = await prisma.partie.count({ where: { nom_vainqueur: nom } });
+                if (nbVictoires >= 1) await unlock(1);
+            }
+
+            // ── Succès 2 : Sans faute ─────────────────────────────────────────
+            const questionsJoueur = partie.partieQuestions.filter((pq: any) => pq.id_joueur === nom);
+            const toutesCorrectes = questionsJoueur.length > 0 && questionsJoueur.every((pq: any) => pq.est_correcte === true);
+            if (toutesCorrectes) await unlock(2);
+
+            // ── Succès 3 : Vétéran ────────────────────────────────────────────
+            const nbParties = await prisma.partieJoueur.count({ where: { nom_joueur: nom } });
+            if (nbParties >= 5) await unlock(3);
+
+            // ── Succès 4 : Maître du Cash ─────────────────────────────────────
+            const nbCash = await prisma.partieQuestion.count({
+                where: { id_joueur: nom, est_correcte: true, points_gagnes: 3 }
+            });
+            if (nbCash >= 10) await unlock(4);
+
+            // ── Succès 5 : Érudit ─────────────────────────────────────────────
+            const categories = await prisma.categorie.findMany();
+            let erudit = true;
+            for (const cat of categories) {
+                const bonneReponse = await prisma.partieQuestion.findFirst({
+                    where: {
+                        id_joueur: nom,
+                        est_correcte: true,
+                        question: { id_categorie: cat.id }
+                    },
+                    include: { question: true }
+                });
+                if (!bonneReponse) { erudit = false; break; }
+            }
+            if (erudit) await unlock(5);
+
+            // ── Succès 6-10 : Champions par catégorie ────────────────────────
+            if (partie.nom_vainqueur === nom && partie.id_categorie !== null) {
+                const championsMap: Record<number, number> = { 1: 6, 2: 7, 3: 8, 4: 9, 5: 10 };
+                const idSucces = championsMap[partie.id_categorie];
+                if (idSucces) await unlock(idSucces);
+            }
+
+            // ── Succès 11 : Grand Explorateur ────────────────────────────────
+            // Vérifie victoire dans chaque catégorie + Mixte
+            const nbCategories = await prisma.categorie.count();
+            let grandExplorateur = true;
+
+            // Victoire en Mixte
+            const victoireMixte = await prisma.partie.findFirst({
+                where: { nom_vainqueur: nom, id_categorie: null }
+            });
+            if (!victoireMixte) grandExplorateur = false;
+
+            if (grandExplorateur) {
+                const cats = await prisma.categorie.findMany();
+                for (const cat of cats) {
+                    const victoireCat = await prisma.partie.findFirst({
+                        where: { nom_vainqueur: nom, id_categorie: cat.id }
+                    });
+                    if (!victoireCat) { grandExplorateur = false; break; }
+                }
+            }
+            if (grandExplorateur) await unlock(11);
+        }
     });
 }

@@ -14,6 +14,8 @@ export interface PartieQuestion {
   id_question: number;
   id_joueur: string | null;
   ordre: number;
+  est_correcte: boolean | null;
+  points_gagnes: number | null;
   question?: Question;
   joueur?: Joueur;
 }

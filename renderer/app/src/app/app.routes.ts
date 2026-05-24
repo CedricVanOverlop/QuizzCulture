@@ -4,7 +4,7 @@ import {Home} from './components/home/home';
 import {Jouer} from './components/jouer/jouer';
 import {Joueurs} from './components/joueurs/joueurs';
 import {Succes} from './components/succes/succes';
-import {Partie} from './components/jouer/partie/partie'
+import { Partie } from './components/partie/partie';
 
 export const routes: Routes = [
     {path: '', redirectTo: 'home', pathMatch: 'full'},

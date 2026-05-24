@@ -33,4 +33,8 @@ export class QuestionService {
   async getAllCategories() {
     return await this.api.getAllCategories();
   }
+
+  async getManyQuestionRandom(nb_questions: number) {
+    return await this.api.getManyQuestionRandom(nb_questions);
+  }
 }

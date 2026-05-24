@@ -1,0 +1,302 @@
+.partie-container {
+  min-height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #e8a830;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      #c8861888 61px,
+      transparent 62px
+    ),
+    radial-gradient(ellipse at 50% 0%, #f5c84233 0%, transparent 60%);
+
+  .joueur-actif {
+    font-family: 'Georgia', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #3d1f00;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    padding: 0.75rem 2rem;
+    background: #3d1f00cc;
+    color: #f5c842;
+    border-radius: 30px;
+    box-shadow: 0 2px 0 #1a0a00, 0 4px 12px #00000033;
+  }
+
+  .question-card {
+    max-width: 620px;
+    width: 100%;
+    padding: 2rem;
+    background: #c8781844;
+    border: 2px solid #a0620077;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px #00000022;
+
+    .interrogation {
+      font-family: 'Georgia', serif;
+      font-size: 1.3rem;
+      color: #3d1f00;
+      text-align: center;
+      line-height: 1.6;
+      margin: 0;
+    }
+  }
+
+  .modes {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .mode-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 1rem 1.5rem;
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.2s ease;
+    box-shadow: 0 2px 0 #1a0a00, 0 4px 12px #00000033;
+
+    .points {
+      font-size: 0.8rem;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+
+    &:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 0 #1a0a00, 0 8px 20px #00000044;
+    }
+
+    &:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 #1a0a00;
+    }
+
+    &.cash {
+      background: #c8a030cc;
+      color: #3d1f00;
+      border-color: #a0800044;
+    }
+
+    &.carre {
+      background: #3d6fa0cc;
+      color: #f5f0e0;
+      border-color: #2a4f7044;
+    }
+
+    &.duo {
+      background: #3d1f00cc;
+      color: #f5c842;
+      border-color: #f5c84244;
+    }
+  }
+
+  .cash-zone {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    .cash-input {
+      padding: 0.75rem 1rem;
+      font-family: 'Georgia', serif;
+      font-size: 1rem;
+      background: #3d1f00cc;
+      color: #f5c842;
+      border: 1px solid #f5c84244;
+      border-radius: 8px;
+      outline: none;
+      width: 280px;
+
+      &::placeholder {
+        color: #f5c84266;
+      }
+
+      &:focus {
+        border-color: #f5c84288;
+      }
+    }
+  }
+
+  .btn-valider {
+    padding: 0.75rem 1.5rem;
+    background: #3d1f00cc;
+    color: #f5c842;
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 1px solid #f5c84244;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 0 #1a0a00;
+    transition: transform 0.1s ease, filter 0.2s ease;
+
+    &:hover {
+      filter: brightness(1.15);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+
+  .propositions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    max-width: 500px;
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .prop-btn {
+    padding: 1rem;
+    background: #3d1f00cc;
+    color: #f5c842;
+    font-family: 'Georgia', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid #f5c84244;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 0 #1a0a00;
+    transition: transform 0.1s ease, filter 0.2s ease;
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.15);
+      transform: translateY(-2px);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  .feedback {
+    font-family: 'Georgia', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 10px;
+    animation: fadeIn 0.2s ease;
+
+    &.correct {
+      background: #c8781844;
+      color: #3d1f00;
+      border: 2px solid #a0620066;
+    }
+
+    &.incorrect {
+      background: #8b000022;
+      color: #8b0000;
+      border: 2px solid #8b000044;
+    }
+  }
+
+  .classement {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+
+    h1 {
+      font-family: 'Georgia', serif;
+      font-size: 2.5rem;
+      color: #3d1f00;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-shadow: 0 1px 0 #f5d88088;
+    }
+  }
+
+  .podium {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .podium-ligne {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: #c8781833;
+    border: 2px solid #a0620055;
+    border-radius: 10px;
+    font-family: 'Georgia', serif;
+    color: #3d1f00;
+
+    &.vainqueur {
+      background: #3d1f00cc;
+      color: #f5c842;
+      border-color: #f5c84266;
+      font-size: 1.1rem;
+    }
+
+    .rang {
+      font-weight: 700;
+      width: 1.5rem;
+    }
+
+    .nom {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    .pts {
+      font-weight: 700;
+    }
+  }
+
+  .btn-retour {
+    padding: 1rem 3rem;
+    background: #3d1f00cc;
+    color: #f5c842;
+    font-family: 'Georgia', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    border: 1px solid #f5c84244;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 0 #1a0a00, 0 4px 12px #00000033;
+    transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.2s ease;
+
+    &:hover {
+      filter: brightness(1.15);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 0 #1a0a00, 0 8px 20px #00000044;
+    }
+
+    &:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 #1a0a00;
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}

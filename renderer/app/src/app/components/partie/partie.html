@@ -1,0 +1,86 @@
+<div class="partie-container">
+
+  @if (!partieTerminee()) {
+
+    @if (questionCourante()) {
+
+      <div class="joueur-actif">
+        🎯 {{ joueurActif() }}
+      </div>
+
+      <div class="question-card">
+        <p class="interrogation">{{ questionCourante().question.interrogation }}</p>
+      </div>
+
+      @if (modeChoisi() === null) {
+        <div class="modes">
+          <button class="mode-btn cash" (click)="choisirMode('cash')">
+            💰 Cash
+            <span class="points">3 pts</span>
+          </button>
+          <button class="mode-btn carre" (click)="choisirMode('carre')">
+            🟦 Carré
+            <span class="points">2 pts</span>
+          </button>
+          <button class="mode-btn duo" (click)="choisirMode('duo')">
+            ⚡ Duo
+            <span class="points">1 pt</span>
+          </button>
+        </div>
+      }
+
+      @if (modeChoisi() === 'cash') {
+        <div class="cash-zone">
+          <input
+            [(ngModel)]="cashInput"
+            placeholder="Ta réponse..."
+            class="cash-input"
+            (keydown.enter)="repondreCash(cashInput)" />
+          <button class="btn-valider" (click)="repondreCash(cashInput)">Valider</button>
+        </div>
+      }
+
+      @if (modeChoisi() === 'carre' || modeChoisi() === 'duo') {
+        <div class="propositions">
+          @for (prop of propositions(); track prop) {
+            <button
+              class="prop-btn"
+              [disabled]="feedback() !== null"
+              (click)="repondre(prop)">
+              {{ prop === '__REPONSE__' ? '???' : prop }}
+            </button>
+          }
+        </div>
+      }
+
+      @if (feedback() !== null) {
+        <div class="feedback" [class.correct]="feedback() === 'correct'" [class.incorrect]="feedback() === 'incorrect'">
+          {{ feedback() === 'correct' ? '✅ Bonne réponse !' : '❌ Mauvaise réponse !' }}
+        </div>
+      }
+
+    }
+
+  } @else {
+
+    <div class="classement">
+        <h1>Partie terminée !</h1>
+
+        @if (classement().length > 1 && classement()[0].points === classement()[1].points) {
+            <p class="egalite">🤝 Égalité !</p>
+        }
+
+        <div class="podium">
+            @for (joueur of classement(); track joueur.nom_joueur; let i = $index) {
+            <div class="podium-ligne" [class.vainqueur]="i === 0 && !(classement().length > 1 && classement()[0].points === classement()[1].points)">
+                <span class="rang">{{ i + 1 }}.</span>
+                <span class="nom">{{ joueur.nom_joueur }}</span>
+                <span class="pts">{{ joueur.points }} pts</span>
+            </div>
+            }
+        </div>
+
+        <button class="btn-retour" routerLink="/home">Retour à l'accueil</button>
+    </div>
+  }
+</div>

@@ -38,6 +38,8 @@ contextBridge.exposeInMainWorld('api', {
         ipcRenderer.invoke('get-many-question-by-categorie', id_cat, nb_questions),
     checkReponse: (id_question: number) =>
         ipcRenderer.invoke('check-reponse', id_question),
+    getManyQuestionRandom: (nb_questions: number) =>
+        ipcRenderer.invoke('get-many-question-random', nb_questions),
 
     // Parties
     getPartieById: (id_partie: number) =>
@@ -72,9 +74,12 @@ contextBridge.exposeInMainWorld('api', {
         ipcRenderer.invoke('get-partiequestion-by-partie', id),
     createPartieQuestion: (id_partie: number, id_question: number, ordre: number) =>
         ipcRenderer.invoke('create-partiequestion', id_partie, id_question, ordre),
-    updateRepondant: (id_partie: number, id_question: number, id_joueur: string) =>
-        ipcRenderer.invoke('update-repondant', id_partie, id_question, id_joueur),
+    updateRepondant: (id_partie: number, id_question: number, id_joueur: string, est_correcte: boolean, points_gagnes: number) =>
+        ipcRenderer.invoke('update-repondant', id_partie, id_question, id_joueur, est_correcte, points_gagnes),
     deletePartieQuestion: (id_partie: number, id_question: number) =>
         ipcRenderer.invoke('delete-partiequestion', id_partie, id_question),
+
+    checkAndUnlockSucces: (id_partie: number) =>
+        ipcRenderer.invoke('check-and-unlock-succes', id_partie),
 
 });

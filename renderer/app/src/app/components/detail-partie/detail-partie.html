@@ -18,10 +18,20 @@
 
     <h3>Questions</h3>
     @for (pq of questions(); track pq.id_question) {
-      <div class="question-ligne">
+      <div class="question-ligne" [class.correcte]="pq.est_correcte === true" [class.incorrecte]="pq.est_correcte === false">
         <span class="ordre">{{ pq.ordre }}.</span>
-        <span class="interrogation">{{ pq.question.interrogation }}</span>
-        <span class="repondant">{{ pq.id_joueur ?? 'Sans réponse' }}</span>
+        <div class="question-detail">
+          <span class="interrogation">{{ pq.question.interrogation }}</span>
+          <span class="reponse">✓ {{ pq.question.reponse }}</span>
+        </div>
+        <div class="question-resultat">
+          <span class="repondant">{{ pq.id_joueur ?? 'Sans réponse' }}</span>
+          @if (pq.est_correcte === true) {
+            <span class="pts">+{{ pq.points_gagnes }} pts</span>
+          } @else if (pq.est_correcte === false) {
+            <span class="pts incorrect">✗</span>
+          }
+        </div>
       </div>
     }
 

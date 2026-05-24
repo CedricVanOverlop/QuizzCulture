@@ -1,1 +1,53 @@
-<p>jouer works!</p>
+<div class="jouer-container">
+  <button class="backHome" routerLink="/home">✕</button>
+  <h1>Nouvelle Partie</h1>
+
+  @if (erreur()) {
+    <p class="erreur">{{ erreur() }}</p>
+  }
+
+  <div class="section">
+    <h2>Joueurs</h2>
+    <div class="joueurs-grille">
+      @for (joueur of joueurs(); track joueur.nom) {
+        <div
+          class="joueur-carte"
+          [class.selectionne]="selectionnes().includes(joueur.nom)"
+          (click)="toggleJoueur(joueur.nom)">
+          {{ joueur.nom }}
+        </div>
+      }
+    </div>
+  </div>
+
+  <form [formGroup]="form" class="section">
+
+    <h2>Catégorie</h2>
+    <select formControlName="idCategorie">
+      <option [ngValue]="null">Mixte</option>
+      @for (cat of categories(); track cat.id) {
+        <option [ngValue]="cat.id">{{ cat.libelle }}</option>
+      }
+    </select>
+
+    <h2>Nombre de questions</h2>
+    @if (selectionnes().length === 0) {
+      <p class="hint">Sélectionne d'abord des joueurs</p>
+    } @else {
+      <div class="nb-questions">
+        @for (n of multiplesValides(); track n) {
+          <div
+            class="nb-carte"
+            [class.selectionne]="form.value.nbQuestions === n"
+            (click)="form.patchValue({ nbQuestions: n })">
+            {{ n }}
+          </div>
+        }
+      </div>
+    }
+
+  </form>
+
+  <button class="btn-demarrer" (click)="demarrer()">Démarrer ▶</button>
+
+</div>

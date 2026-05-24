@@ -86,6 +86,18 @@
     margin-bottom: 0.5rem;
     font-family: 'Georgia', serif;
     color: #3d1f00;
+    border-left: 3px solid transparent;
+    transition: background 0.2s ease;
+
+    &.correcte {
+      background: #c8781833;
+      border-left-color: #3a7a3a;
+    }
+
+    &.incorrecte {
+      background: #8b000011;
+      border-left-color: #8b0000;
+    }
 
     .ordre {
       font-weight: 700;
@@ -94,17 +106,45 @@
       padding-top: 2px;
     }
 
-    .interrogation {
-      font-size: 0.95rem;
-      line-height: 1.4;
+    .question-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      .interrogation {
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+
+      .reponse {
+        font-size: 0.8rem;
+        color: #3a7a3a;
+        font-style: italic;
+      }
     }
 
-    .repondant {
-      font-size: 0.85rem;
-      font-style: italic;
-      color: #5c3200;
-      white-space: nowrap;
-      padding-top: 2px;
+    .question-resultat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.2rem;
+
+      .repondant {
+        font-size: 0.85rem;
+        font-style: italic;
+        color: #5c3200;
+        white-space: nowrap;
+      }
+
+      .pts {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #3a7a3a;
+
+        &.incorrect {
+          color: #8b0000;
+        }
+      }
     }
   }
 }

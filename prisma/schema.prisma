@@ -73,13 +73,15 @@ model PartieJoueur {
 }
 
 model PartieQuestion {
-  id_partie   Int
-  id_question Int
-  id_joueur   String?
-  ordre       Int
-  question    Question @relation(fields: [id_question], references: [id])
-  joueur      Joueur?  @relation(fields: [id_joueur], references: [nom])
-  partie      Partie @relation(fields: [id_partie], references: [id], onDelete: Cascade)
+  id_partie    Int
+  id_question  Int
+  id_joueur    String?
+  ordre        Int
+  est_correcte Boolean?
+  points_gagnes Int?
+  question     Question @relation(fields: [id_question], references: [id])
+  joueur       Joueur?  @relation(fields: [id_joueur], references: [nom])
+  partie       Partie   @relation(fields: [id_partie], references: [id], onDelete: Cascade)
 
   @@id([id_partie, id_question])
 }

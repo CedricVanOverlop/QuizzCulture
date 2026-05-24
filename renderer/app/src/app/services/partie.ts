@@ -58,8 +58,8 @@ export class PartieService {
     return await this.api.createPartieQuestion(id_partie, id_question, ordre);
   }
 
-  async updateRepondant(id_partie: number, id_question: number, id_joueur: string) {
-    return await this.api.updateRepondant(id_partie, id_question, id_joueur);
+  async updateRepondant(id_partie: number, id_question: number, id_joueur: string, est_correcte: boolean, points_gagnes: number) {
+      return await this.api.updateRepondant(id_partie, id_question, id_joueur, est_correcte, points_gagnes);
   }
 
   async deletePartieQuestion(id_partie: number, id_question: number) {
@@ -68,5 +68,9 @@ export class PartieService {
 
   async getAllParties() {
     return await this.api.getAllParties();
+  }
+
+  async checkAndUnlockSucces(id_partie: number) {
+    return await this.api.checkAndUnlockSucces(id_partie);
   }
 }
