@@ -59,55 +59,9 @@ export function registerHandlers() {
         })
     });
 
-    ipcMain.handle('get-succes-non-obtenus-par-joueur', async(_event, nom: string) => {
-        return await prisma.succes.findMany({
-            where: {
-                joueurSucces: {
-                    none: { nom_joueur: nom }
-                }
-            }
-        })
-    });
-
-    ipcMain.handle('unlock_succes', async(_event, nom: string, id: number) => {
-        return await prisma.joueurSucces.create({
-            data: {
-                nom_joueur: nom,
-                id_succes: id
-            }
-        })
-    });
 
     ipcMain.handle('get-all-categories', async () => {
         return await prisma.categorie.findMany();
-    });
-
-    ipcMain.handle('get-categorie', async(_event, id_cat: number) => {
-        return await prisma.categorie.findMany({
-            where: { id: id_cat }
-        })
-    });
-
-    ipcMain.handle('get-question-random', async() => {
-        const questions = await prisma.question.findMany();
-        const random = questions[Math.floor(Math.random() * questions.length)];
-        return random;
-    });
-
-    ipcMain.handle('get-question-by-id', async(_event, id_question: number) => {
-        return await prisma.question.findUnique({
-            where: { id: id_question },
-            omit: { reponse: true }
-        });
-    });
-
-    ipcMain.handle('get-question-by-categorie', async(_event, id_cat: number) => {
-        const questions = await prisma.question.findMany({
-            where: { id_categorie: id_cat },
-            omit: { reponse: true }
-        });
-        const random = questions[Math.floor(Math.random() * questions.length)];
-        return random;
     });
 
     ipcMain.handle('get-many-question-random', async(_event, nb_questions: number) => {

@@ -14,11 +14,5 @@ export class SuccesService {
     return await this.api.getSuccesJoueur(nom);
   }
 
-  async getSuccesNonObtenusParJoueur(nom: string) {
-    return await this.api.getSuccesNonObtenusParJoueur(nom);
-  }
 
-  async unlockSucces(nom: string, id: number) {
-    return await this.api.unlockSucces(nom, id);
-  }
 }

@@ -1,4 +1,4 @@
-# Quiz App 🎯
+# QuizzCulture 🎯
 
 Application de quiz multijoueur développée dans le cadre du cours de projet de développement SGBD (BAC 2).
 Elle permet de gérer des joueurs, des catégories, des questions et des parties de quiz, avec un système de succès.
@@ -12,10 +12,9 @@ Développée avec **Electron** (desktop), **Angular** (interface), **Prisma** (O
 1. [Description du projet](#description-du-projet)
 2. [Schéma de la base de données](#schéma-de-la-base-de-données)
 3. [Explication de la modélisation](#explication-de-la-modélisation)
-4. [Prérequis](#prérequis)
-5. [Installation](#installation)
-6. [Scripts disponibles](#scripts-disponibles)
-7. [Structure du projet](#structure-du-projet)
+4. [Installation](#installation)
+5. [Scripts disponibles](#scripts-disponibles)
+6. [Structure du projet](#structure-du-projet)
 
 ---
 
@@ -96,7 +95,11 @@ erDiagram
   Joueur ||--o{ Partie : "vainqueur de"
 ```
 
-### Tables
+---
+
+## Explication de la modélisation
+
+### Les tables
 
 | Table | Clé primaire | Description |
 |---|---|---|
@@ -105,91 +108,59 @@ erDiagram
 | `Categorie` | `id` (autoincrement) | Thème regroupant des questions. |
 | `Question` | `id` (autoincrement) | Question à choix multiples avec 1 bonne réponse et 3 propositions. Appartient à une catégorie. |
 | `Partie` | `id` (autoincrement) | Session de jeu. Contient le nombre de questions, le vainqueur (nullable) et la catégorie (nullable — null = mode mixte). |
-| `PartieJoueur` | `(nom_joueur, id_partie)` | Table de jonction N:M entre Joueur et Partie. Stocke les points du joueur dans la partie. |
-| `PartieQuestion` | `(id_partie, id_question)` | Table de jonction N:M entre Partie et Question. Stocke le joueur répondant, l'ordre, si la réponse était correcte et les points gagnés. |
-| `JoueurSucces` | `(nom_joueur, id_succes)` | Table de jonction N:M entre Joueur et Succès. |
-
----
-
-## Explication de la modélisation
-
-### Les entités principales
-
-**Joueur**
-Identifié par son nom (clé primaire naturelle). Le champ `actif` (booléen, `true` par défaut) permet une suppression logique : un joueur supprimé conserve tout son historique et peut être réactivé.
-
-**Question**
-Question à choix multiples avec l'énoncé, la bonne réponse et trois propositions incorrectes. Chaque question appartient à une catégorie (relation 1:N).
-
-**Categorie**
-Regroupe les questions par thème (ex : Histoire, Science, Sport, Géographie, Musique).
-
-**Succes**
-Récompense débloquable automatiquement en fin de partie (ex : "Première victoire", "Sans faute"...).
-
-**Partie**
-Représente une session de jeu. Elle contient le nombre de questions jouées, le nom du vainqueur (nullable — la partie peut être en cours) et la catégorie choisie (nullable — `null` signifie mode mixte toutes catégories).
+| `PartieJoueur` | `(nom_joueur, id_partie)` | Table de jonction N:M entre `Joueur` et `Partie`. Stocke les points du joueur dans la partie. |
+| `PartieQuestion` | `(id_partie, id_question)` | Table de jonction N:M entre `Partie` et `Question`. Stocke le joueur répondant, l'ordre, la correction et les points gagnés. |
+| `JoueurSucces` | `(nom_joueur, id_succes)` | Table de jonction N:M entre `Joueur` et `Succes`. |
 
 ### Les relations
 
-**PartieJoueur** — Table de jonction N:M entre Joueur et Partie
+**Categorie → Question** (1:N)
+Une catégorie regroupe plusieurs questions. Chaque question appartient à exactement une catégorie. Implémentée via une clé étrangère `id_categorie` dans `Question`, avec `onDelete: Restrict` (on ne peut pas supprimer une catégorie qui contient des questions).
 
-Un joueur peut participer à plusieurs parties, et une partie peut avoir plusieurs joueurs.
-Cette table stocke également les **points** obtenus par chaque joueur dans chaque partie.
+**Categorie → Partie** (1:N)
+Une partie peut être liée à une catégorie (mode thématique) ou non (`null` = mode mixte toutes catégories). Relation optionnelle via `id_categorie` nullable dans `Partie`.
 
-**PartieQuestion** — Table de jonction N:M entre Partie et Question
+**Joueur → Partie** (1:N — vainqueur)
+La `Partie` garde une référence vers le nom du vainqueur, nullable tant que la partie est en cours.
 
-Une partie contient plusieurs questions, et une question peut apparaître dans plusieurs parties.
-Cette table stocke quel joueur a répondu (`id_joueur`, nullable), l'**ordre** d'apparition, si la réponse était **correcte** (`est_correcte`, nullable) et les **points gagnés** (`points_gagnes`, nullable).
+**Joueur ↔ Partie** (N:M via `PartieJoueur`)
+Un joueur peut participer à plusieurs parties, et une partie peut avoir plusieurs joueurs. La table de jonction `PartieJoueur` stocke également les `points` accumulés par chaque joueur dans chaque partie — données impossibles à placer dans l'une ou l'autre table principale. `onDelete: Cascade` sur la `Partie` : supprimer une partie supprime automatiquement ses entrées `PartieJoueur`.
 
-**JoueurSucces** — Table de jonction N:M entre Joueur et Succès
+**Partie ↔ Question** (N:M via `PartieQuestion`)
+Une partie contient plusieurs questions, et une même question peut apparaître dans plusieurs parties. La table `PartieQuestion` stocke l'`ordre` d'apparition de la question, quel joueur y a répondu (`id_joueur`, nullable au moment de la création), si la réponse était correcte (`est_correcte`) et les `points_gagnes`. `onDelete: Cascade` sur la `Partie` : supprimer une partie supprime automatiquement ses entrées `PartieQuestion`.
 
-Un joueur peut débloquer plusieurs succès, et un succès peut être débloqué par plusieurs joueurs.
+**Joueur ↔ Succes** (N:M via `JoueurSucces`)
+Un joueur peut débloquer plusieurs succès, et un même succès peut être débloqué par plusieurs joueurs. La table de jonction ne stocke ici que la relation elle-même (pas de données supplémentaires).
 
 ### Choix de modélisation
 
 | Choix | Justification |
 |---|---|
-| `nom` comme PK pour Joueur | Le nom est l'identifiant naturel d'un joueur dans ce contexte |
-| `actif` sur Joueur | Suppression logique : préserve l'historique des parties et des succès |
-| `nom_vainqueur` nullable dans Partie | La partie peut être en cours sans vainqueur encore désigné |
-| `id_categorie` nullable dans Partie | `null` = mode mixte (questions de toutes catégories) |
-| `id_joueur` nullable dans PartieQuestion | Une question peut être posée sans qu'un joueur y ait encore répondu |
-| `est_correcte` et `points_gagnes` dans PartieQuestion | Traçabilité complète de chaque réponse pour les statistiques |
-| Tables de jonction explicites | Permet de stocker des données supplémentaires sur la relation (points, ordre, résultat) |
-| `onDelete: Cascade` sur PartieJoueur et PartieQuestion | Supprimer une partie supprime automatiquement ses joueurs et ses questions associées |
-| `autoincrement` sur les IDs numériques | Garantit l'unicité sans contrainte métier |
-
----
-
-## Prérequis
-
-Avant de commencer, assurez-vous d'avoir installé :
-
-- [Node.js](https://nodejs.org/) v18 ou supérieur
-- [Git](https://git-scm.com/)
-- Angular CLI : `npm install -g @angular/cli`
-- **Windows uniquement** : [Visual Studio Build Tools 2022](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) avec le composant "Développement Desktop en C++"
-
-> Les Visual Studio Build Tools sont obligatoires sur Windows pour compiler `better-sqlite3`, un module natif C++ requis par Prisma.
+| `nom` comme clé primaire pour `Joueur` | Le nom est l'identifiant naturel et métier d'un joueur. Évite une clé technique superflue. |
+| Champ `actif` sur `Joueur` | Suppression logique : préserve tout l'historique des parties et des succès liés au joueur. |
+| `nom_vainqueur` nullable dans `Partie` | La partie peut exister sans vainqueur encore désigné (partie en cours). |
+| `id_categorie` nullable dans `Partie` | `null` représente le mode mixte (questions piochées dans toutes les catégories). |
+| `id_joueur` nullable dans `PartieQuestion` | La question est pré-insérée au lancement de la partie ; le joueur répondant est renseigné en cours de partie. |
+| `est_correcte` et `points_gagnes` dans `PartieQuestion` | Permet la traçabilité complète de chaque réponse pour l'affichage du détail d'une partie dans l'historique. |
+| Tables de jonction explicites avec `@@id` composite | Permet de stocker des données supplémentaires sur les relations (points, ordre, résultat) — impossible avec une relation implicite Prisma. |
+| `onDelete: Cascade` sur `PartieJoueur` et `PartieQuestion` | Supprimer une partie nettoie automatiquement ses données liées. |
+| `onDelete: Restrict` sur `Question → Categorie` | Interdit la suppression d'une catégorie si elle contient encore des questions. |
+| `autoincrement` sur les IDs numériques | Garantit l'unicité sans contrainte métier supplémentaire. |
 
 ---
 
 ## Installation
 
-### 1. Extraire le zip et se placer dans le dossier
+> On part du principe que Node.js, Angular CLI et Git sont déjà installés sur la machine.
+
+### 1. Cloner le dépôt et se placer dans le dossier
 
 ```bash
+git clone <url-du-repo>
 cd QuizzCulture
 ```
 
-### 2. Installer les dépendances Electron
-
-```bash
-npm install
-```
-
-### 3. Créer le fichier d'environnement
+### 2. Créer le fichier d'environnement
 
 Créez un fichier `.env` à la racine du projet avec le contenu suivant :
 
@@ -197,7 +168,13 @@ Créez un fichier `.env` à la racine du projet avec le contenu suivant :
 DATABASE_URL="file:./dev.db"
 ```
 
-> Ce fichier est ignoré par Git (`.gitignore`), il doit donc être recréé manuellement sur chaque machine.
+> Ce fichier est ignoré par Git (`.gitignore`), il doit être recréé manuellement sur chaque machine.
+
+### 3. Installer les dépendances Electron
+
+```bash
+npm install
+```
 
 ### 4. Générer le client Prisma et créer la base de données
 
@@ -206,23 +183,18 @@ npx prisma migrate deploy
 npx prisma generate
 ```
 
-`prisma migrate deploy` applique les migrations existantes et crée le fichier `dev.db`.
+`prisma migrate deploy` applique les migrations existantes et crée le fichier `dev.db`.  
 `prisma generate` génère le client TypeScript dans `src/prisma/generated/`.
 
 ### 5. Peupler la base de données (seed)
 
-La seed s'exécute via `ts-node` (Node.js système). Il faut d'abord recompiler `better-sqlite3` pour Node.js, faire la seed, puis le recompiler pour Electron.
-
 ```bash
-npm rebuild better-sqlite3
 npx prisma db seed
 ```
 
-> Cette commande insère les données de test : catégories, questions (500+), succès. Défini dans `prisma/seed.ts`.
+Le seed insère les catégories, les questions et les succès nécessaires au bon fonctionnement de l'application.
 
-### 6. Recompiler better-sqlite3 pour Electron
-
-Après la seed, recompilez `better-sqlite3` pour Electron afin que l'application puisse démarrer correctement.
+### 6. Recompiler le module natif better-sqlite3 pour Electron
 
 ```bash
 npm install --save-dev @electron/rebuild

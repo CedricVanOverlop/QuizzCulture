@@ -15,25 +15,11 @@ contextBridge.exposeInMainWorld('api', {
         ipcRenderer.invoke('get-all-succes'),
     getSuccesJoueur: (nom: string) =>
         ipcRenderer.invoke('get-succes-joueur', nom),
-    getSuccesNonObtenusParJoueur: (nom: string) =>
-        ipcRenderer.invoke('get-succes-non-obtenus-par-joueur', nom),
-    unlockSucces: (nom: string, id: number) =>
-        ipcRenderer.invoke('unlock_succes', nom, id),
-
     // Catégories
-    getCategorie: (id_cat: number) =>
-        ipcRenderer.invoke('get-categorie', id_cat),
-
     getAllCategories: () =>
         ipcRenderer.invoke('get-all-categories'),
 
     // Questions
-    getQuestionRandom: () =>
-        ipcRenderer.invoke('get-question-random'),
-    getQuestionById: (id_question: number) =>
-        ipcRenderer.invoke('get-question-by-id', id_question),
-    getQuestionByCategorie: (id_cat: number) =>
-        ipcRenderer.invoke('get-question-by-categorie', id_cat),
     getManyQuestionByCategorie: (id_cat: number, nb_questions: number) =>
         ipcRenderer.invoke('get-many-question-by-categorie', id_cat, nb_questions),
     checkReponse: (id_question: number) =>
